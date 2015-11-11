@@ -16,7 +16,7 @@ pY = wH // 4
 
 # give the point a constant speed
 # in one direction
-vX = 10 # pixels / second
+vX = 30 # pixels / second
 vY = -30 # pixels / second
 
 # setup a 'pong player': a tall rectangle
@@ -70,6 +70,18 @@ def drawLabel(value, x, y):
                           anchor_x='left', anchor_y='center')
     label.draw()
 
+def pointInRectangle(x, y, rec):
+    "is the given point inside the given lines of a rectangle?"
+    # since we know these are the points for a rectangle, we know
+    # we can simplyfy things
+    x0 = rec[0][0]
+    x1 = rec[3][0]
+    y0 = rec[0][1]
+    y1 = rec[1][1]
+   
+    # is the point within these coords?
+    return x > x0 and x < x1 and y > y0 and y < y1
+
 def update(dt):
     "This is called at regular intervals by the pyglet game"
     
@@ -87,11 +99,17 @@ def update(dt):
     # so now the pong's lines on the screen need to be updated
     pongPos = [(pongX + x, pongY + y) for x, y in pongLines]
 
-    # bounce the ball!
+    # bounce the ball off walls!
     if pX < 0 or pX > wW:
         vX = -1 * vX
     if pY < 0 or pY > wH:
         vY = -1 * vY
+
+    # bounce the ball off the pong
+    if pointInRectangle(pX, pY, pongPos):
+        print "hit!!!"
+        # if it's inside the pong
+        vX = -1 * vX
 
 @window.event
 def on_key_press(symbol, modifiers):
