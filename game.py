@@ -17,6 +17,7 @@ pY = wH // 4
 # give the point a constant speed
 # in one direction
 vX = 10 # pixels / second
+vY = -30 # pixels / second
 
 
 # Below are are helper functions for drawing points, lines, shapes
@@ -60,10 +61,11 @@ def update(dt):
     
     # update method needs to know about these variables
     global pX, vX
+    global pY, vY
     
     # update the points position using it's velocity
     pX = pX + (vX * dt)
-    print "update: pX: ", pX
+    pY = pY + (vY * dt)
 
 @window.event
 def on_key_press(symbol, modifiers):
@@ -76,8 +78,6 @@ def on_key_release(symbol, modifiers):
 @window.event
 def on_draw():
     "Called by pyglet when it's time to draw the screen"
-
-    print "on_draw"
 
     # first we have to clear everything
     window.clear()
