@@ -67,6 +67,12 @@ def update(dt):
     pX = pX + (vX * dt)
     pY = pY + (vY * dt)
 
+    # bounce!
+    if pX < 0 or pX > wW:
+        vX = -1 * vX
+    if pY < 0 or pY > wH:
+        vY = -1 * vY
+
 @window.event
 def on_key_press(symbol, modifiers):
     print "on_key_press: ", symbol
