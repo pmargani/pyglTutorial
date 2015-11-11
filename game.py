@@ -19,6 +19,20 @@ pY = wH // 4
 vX = 10 # pixels / second
 vY = -30 # pixels / second
 
+# setup a 'pong player': a tall rectangle
+# first the position of the center of the pong
+pongX = (wW * 3) // 4
+pongY = wH // 2
+
+# now the coordinates of the lines relative to the center
+pongLines = [(-10,-50),(-10,50),(10,50),(10,-50)]
+
+# combine the two to calculate where the lines should be on the screen
+pongPos = [(pongX + x, pongY + y) for x, y in pongLines]
+
+# the pong has vertical velocity when the right keys are pressed
+pongSpeed = 50
+pongV = 0
 
 # Below are are helper functions for drawing points, lines, shapes
 # and text using pyglet    
@@ -62,12 +76,18 @@ def update(dt):
     # update method needs to know about these variables
     global pX, vX
     global pY, vY
+    global pongX, pongY, pongV, pongLines, pongPos
     
     # update the points position using it's velocity
     pX = pX + (vX * dt)
     pY = pY + (vY * dt)
 
-    # bounce!
+    # update position of the pong
+    pongY = pongY + (pongV * dt)
+    # so now the pong's lines on the screen need to be updated
+    pongPos = [(pongX + x, pongY + y) for x, y in pongLines]
+
+    # bounce the ball!
     if pX < 0 or pX > wW:
         vX = -1 * vX
     if pY < 0 or pY > wH:
@@ -75,11 +95,22 @@ def update(dt):
 
 @window.event
 def on_key_press(symbol, modifiers):
+    global pongV
     print "on_key_press: ", symbol
+    if symbol == key.UP:
+        pongV = pongSpeed
+    if symbol == key.DOWN:
+        pongV = -pongSpeed
+    
 
 @window.event
 def on_key_release(symbol, modifiers):
+    global pongV
     print "on_key_release: ", symbol
+    if symbol == key.UP:
+        pongV = 0
+    if symbol == key.DOWN:
+        pongV = 0
 
 @window.event
 def on_draw():
@@ -90,8 +121,12 @@ def on_draw():
 
     # then redraw everything!
 
-    # just draw the point
+    # draw the point
     drawPoint(pX, pY)
+
+    # draw the pong
+    drawPolygonLines(pongPos)
+    
 
 # How fast do we want to update our game?
 pyglet.clock.schedule_interval(update, 1./framesPerSecond)
