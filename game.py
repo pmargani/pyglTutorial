@@ -8,6 +8,12 @@ wH = wW = 800
 window = pyglet.window.Window(width = wW, height = wH)
 framesPerSecond = 50.
 
+# set up a point
+# don't place it in the center so we can tell how
+# the coordinate system works in pyglet
+pX = wW // 4
+pY = wH // 4
+
 # Below are are helper functions for drawing points, lines, shapes
 # and text using pyglet    
 
@@ -65,8 +71,9 @@ def on_draw():
     window.clear()
 
     # then redraw everything!
-    drawLabel("START", wW//2, wH//2)
 
+    # just draw the point
+    drawPoint(pX, pY)
 
 # How fast do we want to update our game?
 pyglet.clock.schedule_interval(update, 1./framesPerSecond)
