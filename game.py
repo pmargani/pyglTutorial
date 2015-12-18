@@ -3,6 +3,12 @@ from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
 
+# Game states
+PREPLAY = 0
+INPLAY = 1
+POSTPLAY = 2
+gameState = PREPLAY
+
 # set up the window
 wH = wW = 800
 window = pyglet.window.Window(width = wW, height = wH)
@@ -84,6 +90,11 @@ def pointInRectangle(x, y, rec):
 
 def update(dt):
     "This is called at regular intervals by the pyglet game"
+    if gameState == INPLAY:
+        updateInPlay(dt)
+
+def updateInPlay(dt):
+    "How the game is updated while in play."
     
     # update method needs to know about these variables
     global pX, vX
@@ -113,22 +124,26 @@ def update(dt):
 
 @window.event
 def on_key_press(symbol, modifiers):
-    global pongV
+    global pongV, gameState
     print "on_key_press: ", symbol
-    if symbol == key.UP:
-        pongV = pongSpeed
-    if symbol == key.DOWN:
-        pongV = -pongSpeed
+    if gameState == INPLAY:
+        if symbol == key.UP:
+            pongV = pongSpeed
+        if symbol == key.DOWN:
+            pongV = -pongSpeed
+    elif gameState == PREPLAY and symbol == key.ENTER:
+        # start playing!
+        gameState = INPLAY
+    
     
 
 @window.event
 def on_key_release(symbol, modifiers):
     global pongV
     print "on_key_release: ", symbol
-    if symbol == key.UP:
-        pongV = 0
-    if symbol == key.DOWN:
-        pongV = 0
+    if gameState == INPLAY:
+        if symbol == key.UP or symbol == key.DOWN:
+            pongV = 0
 
 @window.event
 def on_draw():
@@ -139,11 +154,17 @@ def on_draw():
 
     # then redraw everything!
 
-    # draw the point
-    drawPoint(pX, pY)
-
-    # draw the pong
-    drawPolygonLines(pongPos)
+    if gameState == INPLAY:
+        # draw the point
+        drawPoint(pX, pY)
+        # draw the pong
+        drawPolygonLines(pongPos)
+    elif gameState == PREPLAY:
+        # draw the start message
+        drawLabel("Press ENTER to start game.", wW//2, wH//2)
+    elif gameState == POSTPLAY:
+        # draw the game over message
+        drawLabel("Game Over Dude.", wW//2, wH//2)
     
 
 # How fast do we want to update our game?
