@@ -10,6 +10,8 @@ INPLAY = 1
 POSTPLAY = 2
 gameState = PREPLAY
 
+score = 0
+
 # set up the window
 wH = wW = 800
 window = pyglet.window.Window(width = wW, height = wH)
@@ -101,7 +103,7 @@ def updateInPlay(dt):
     global pX, vX
     global pY, vY
     global pongX, pongY, pongV, pongLines, pongPos
-    global gameState
+    global gameState, score
     
     # update the points position using it's velocity
     pX = pX + (vX * dt)
@@ -119,10 +121,12 @@ def updateInPlay(dt):
         vY = -1 * vY
 
     # bounce the ball off the pong
+    # this is worth a point!
     if pointInRectangle(pX, pY, pongPos):
         print "hit!!!"
         # if it's inside the pong
         vX = -1 * vX
+        score += 1
 
     # if the ball goes off the right side of screen: GAME OVER!
     if pX > wW:
@@ -166,12 +170,15 @@ def on_draw():
         drawPoint(pX, pY)
         # draw the pong
         drawPolygonLines(pongPos)
+        # draw the score
+        drawLabel("SCORE: %d" % score, 10, 10)
     elif gameState == PREPLAY:
         # draw the start message
         drawLabel("Press ENTER to start game.", wW//2, wH//2)
     elif gameState == POSTPLAY:
         # draw the game over message
         drawLabel("Game Over Dude.", wW//2, wH//2)
+        drawLabel("Final Score: %d" % score, wW//2, (wH//2) - 25)
     
 
 # How fast do we want to update our game?
