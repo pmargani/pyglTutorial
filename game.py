@@ -100,6 +100,7 @@ def updateInPlay(dt):
     global pX, vX
     global pY, vY
     global pongX, pongY, pongV, pongLines, pongPos
+    global gameState 
     
     # update the points position using it's velocity
     pX = pX + (vX * dt)
@@ -111,7 +112,7 @@ def updateInPlay(dt):
     pongPos = [(pongX + x, pongY + y) for x, y in pongLines]
 
     # bounce the ball off walls!
-    if pX < 0 or pX > wW:
+    if pX < 0: 
         vX = -1 * vX
     if pY < 0 or pY > wH:
         vY = -1 * vY
@@ -121,6 +122,11 @@ def updateInPlay(dt):
         print "hit!!!"
         # if it's inside the pong
         vX = -1 * vX
+
+    # if the ball goes off the right side of screen: GAME OVER!
+    if pX > wW:
+        print 'GAME OVER!'
+        gameState = POSTPLAY
 
 @window.event
 def on_key_press(symbol, modifiers):
