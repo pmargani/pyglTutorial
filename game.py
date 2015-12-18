@@ -2,6 +2,7 @@ import pyglet
 from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
+import random
 
 # Game states
 PREPLAY = 0
@@ -15,15 +16,15 @@ window = pyglet.window.Window(width = wW, height = wH)
 framesPerSecond = 50.
 
 # set up a point
-# don't place it in the center so we can tell how
-# the coordinate system works in pyglet
-pX = wW // 4
-pY = wH // 4
+# place it in a random location in the left hand side of the screen
+pX = random.random() * wW/2
+pY = random.random() * wH
 
 # give the point a constant speed
-# in one direction
-vX = 30 # pixels / second
-vY = -30 # pixels / second
+# but in a random direction
+speed = 50
+vX = random.choice([1,-1]) * speed # pixels / second
+vY = random.choice([1,-1]) * speed # pixels / second
 
 # setup a 'pong player': a tall rectangle
 # first the position of the center of the pong
@@ -100,7 +101,7 @@ def updateInPlay(dt):
     global pX, vX
     global pY, vY
     global pongX, pongY, pongV, pongLines, pongPos
-    global gameState 
+    global gameState
     
     # update the points position using it's velocity
     pX = pX + (vX * dt)
